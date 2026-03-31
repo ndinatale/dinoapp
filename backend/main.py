@@ -1,9 +1,11 @@
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
 from supabase import create_client, Client
 from dotenv import load_dotenv
 from typing import Optional
 import os
+import httpx
 
 load_dotenv()
 
@@ -22,6 +24,20 @@ def get_supabase() -> Client:
     if not url or not key:
         raise RuntimeError("Missing Supabase credentials")
     return create_client(url, key)
+
+
+@app.get("/image-proxy")
+async def image_proxy(url: str):
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(
+            url,
+            headers={"User-Agent": "DinoApp/1.0 (https://github.com/ndinatale/dinoapp)"},
+            follow_redirects=True,
+        )
+    if resp.status_code != 200:
+        raise HTTPException(status_code=404, detail="Image not found")
+    content_type = resp.headers.get("content-type", "image/jpeg")
+    return Response(content=resp.content, media_type=content_type)
 
 
 @app.get("/animals")

@@ -3,10 +3,12 @@
 import { useState } from "react";
 import {
   Box, Container, Typography, TextField, MenuItem, Grid,
-  Card, CardMedia, CardContent, Chip, Button, InputAdornment,
+  Card, CardContent, Chip, Button, InputAdornment,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import Image from "next/image";
 import Link from "next/link";
+import { proxyImage } from "../utils";
 import { categoryColors, categoryEmoji } from "../theme";
 
 const dietColors: Record<string, string> = {
@@ -124,12 +126,14 @@ export default function SearchPage() {
                 <Grid size={{ xs: 12, sm: 6, md: 4 }} key={animal.slug}>
                   <Link href={`/animal/${animal.slug}`} style={{ textDecoration: "none" }}>
                     <Card sx={{ height: "100%", cursor: "pointer", transition: "transform 0.2s", "&:hover": { transform: "translateY(-4px)" } }}>
-                      <CardMedia
-                        component="img" height={180}
-                        image={animal.image_url || "/placeholder.png"}
-                        alt={animal.name}
-                        sx={{ objectFit: "contain", bgcolor: "#f5f5f5", p: 1 }}
-                      />
+                      <Box sx={{ position: "relative", height: 180, bgcolor: "#f5f5f5" }}>
+                        <Image
+                          src={proxyImage(animal.image_url)}
+                          alt={animal.name}
+                          fill
+                          style={{ objectFit: "contain", padding: "8px" }}
+                        />
+                      </Box>
                       <CardContent>
                         <Typography variant="h6" fontWeight={800} gutterBottom>
                           {categoryEmoji[animal.category]} {animal.name}

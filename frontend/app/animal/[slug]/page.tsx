@@ -1,8 +1,10 @@
 import {
   Box, Container, Typography, Grid, Chip, Paper, Button,
 } from "@mui/material";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { proxyImage } from "../../utils";
 import { categoryColors, categoryEmoji } from "../../theme";
 
 const dietColors: Record<string, string> = {
@@ -37,13 +39,11 @@ export default async function AnimalPage({ params }: { params: Promise<{ slug: s
     <Box>
       <Box sx={{ bgcolor: color, color: "white", py: 4 }}>
         <Container maxWidth="lg">
-          <Button
-            component={Link}
-            href={`/category/${animal.category}`}
-            sx={{ color: "white", mb: 2, fontWeight: 700, opacity: 0.85, "&:hover": { opacity: 1 } }}
-          >
-            ← Back to {categoryLabels[animal.category]}
-          </Button>
+          <Link href={`/category/${animal.category}`} style={{ textDecoration: "none" }}>
+            <Button sx={{ color: "white", mb: 2, fontWeight: 700, opacity: 0.85, "&:hover": { opacity: 1 } }}>
+              ← Back to {categoryLabels[animal.category]}
+            </Button>
+          </Link>
           <Typography variant="h2" sx={{ fontWeight: 900, fontSize: { xs: "2rem", md: "3rem" } }}>
             {categoryEmoji[animal.category]} {animal.name}
           </Typography>
@@ -57,12 +57,14 @@ export default async function AnimalPage({ params }: { params: Promise<{ slug: s
               elevation={3}
               sx={{ borderRadius: 4, overflow: "hidden", bgcolor: "#f5f5f5", p: 2, textAlign: "center" }}
             >
-              <Box
-                component="img"
-                src={animal.image_url || "/placeholder.png"}
-                alt={animal.name}
-                sx={{ width: "100%", maxHeight: 400, objectFit: "contain" }}
-              />
+              <Box sx={{ position: "relative", height: 400 }}>
+                <Image
+                  src={proxyImage(animal.image_url)}
+                  alt={animal.name}
+                  fill
+                  style={{ objectFit: "contain" }}
+                />
+              </Box>
             </Paper>
           </Grid>
 

@@ -1,9 +1,11 @@
 import {
   Box, Container, Typography, Grid, Card,
-  CardMedia, CardContent, Chip,
+  CardContent, Chip,
 } from "@mui/material";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { proxyImage } from "../../utils";
 import { categoryColors, categoryEmoji } from "../../theme";
 
 const categoryMeta: Record<string, { label: string; description: string }> = {
@@ -62,13 +64,14 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                       "&:hover": { transform: "translateY(-4px)" },
                     }}
                   >
-                    <CardMedia
-                      component="img"
-                      height={200}
-                      image={animal.image_url || "/placeholder.png"}
-                      alt={animal.name}
-                      sx={{ objectFit: "contain", bgcolor: "#f5f5f5", p: 1 }}
-                    />
+                    <Box sx={{ position: "relative", height: 200, bgcolor: "#f5f5f5", p: 1 }}>
+                      <Image
+                        src={proxyImage(animal.image_url)}
+                        alt={animal.name}
+                        fill
+                        style={{ objectFit: "contain", padding: "8px" }}
+                      />
+                    </Box>
                     <CardContent>
                       <Typography variant="h6" fontWeight={800} gutterBottom>
                         {animal.name}
